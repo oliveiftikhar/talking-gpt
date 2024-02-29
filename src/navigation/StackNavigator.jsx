@@ -6,10 +6,11 @@ import ChatScreen from '../screens/Chat';
 import globalstyle from '../theme/style';
 import { Text } from 'react-native';
 import { colors, fonts } from '../theme';
+import SoundWaveSlider from '../screens/SoundWaveSlider';
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
-    return <Stack.Navigator initialRouteName="Chat">
+    return <Stack.Navigator initialRouteName="SoundWaveSlider">
         <Stack.Screen
             name="Chat"
             component={ChatScreen}
@@ -31,6 +32,13 @@ const StackNavigator = () => {
                 // headerRight: () => (<TouchableOpacity>
                 //     <Icon name={'bell'} size={18} color={colors.black} />
                 // </TouchableOpacity>)
+            }}
+        />
+        <Stack.Screen
+            name="SoundWaveSlider"
+            component={SoundWaveSlider}
+            options={{
+                headerShown: false
             }}
         />
     </Stack.Navigator>

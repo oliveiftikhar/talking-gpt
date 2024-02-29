@@ -8,9 +8,10 @@
 import React, { useEffect, useState } from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import { FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View, PermissionsAndroid, Pressable, Platform, Image, } from 'react-native';
-import { Home, Microphone, MicrophoneSlash, PlayCircle, StopCircle } from 'iconsax-react-native';
+import { Archive, Home, Microphone, MicrophoneSlash, PlayCircle, Send, Setting, StopCircle } from 'iconsax-react-native';
 import { colors, fonts, height, width } from './../theme';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import axios from 'axios';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -90,6 +91,30 @@ function ChatScreen() {
         }
     }
 
+    submitfile = () => {
+        // const uri = 'file:////data/user/0/com.talkinggpt/cache/sound.mp4';
+        const formData = new FormData();
+        formData.append('file', {
+            name: 'test-audio.mp4',
+            type: "audio/mp4",
+            uri: Platform.OS === 'android' ? uri : uri.replace('file://', '')
+        });
+        axios({
+            url: 'http://172.17.2.194:8024/api/openai/sendaudio',
+            method: 'POST',
+            data: formData,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
+                // 'Authorization': 'Basic YnJva2VyOmJyb2tlcl8xMjM='
+            }
+        })
+            .then(resp => console.log('resp => ', resp.data))
+            .catch(error => console.error(error));
+
+    }
+
+
     // _onStartRecording = async () => {
     //     if (checkPermission() && !isRecording) {
     //         setIsRecording(true)
@@ -120,18 +145,18 @@ function ChatScreen() {
     // }
 
     const data = [
-        { role: 'user', content: 'Hi there! I need some advice on choosing a new laptop. Can you help me out?' },
-        { role: 'assistant', content: 'Of course! I\'d be happy to help you find the right laptop.What are your specific requirements and budget?' },
-        { role: 'user', content: 'I\'m a graphic designer, so I need something with a powerful processor and a good graphics card.My budget is around $1500.', },
-        { role: 'assistant', content: 'Great! For graphic design, you\'ll want a laptop with a dedicated graphics card and a high- resolution display.Are there any specific brands or preferences you have in mind ?' },
-        { role: 'user', content: 'I\'ve heard good things about both Dell and HP, but I\'m open to suggestions.What do you recommend?' },
-        { role: 'assistant', content: 'Both Dell and HP offer excellent laptops for graphic design.I recommend checking out the Dell XPS 15 or the HP Spectre x360.They have powerful processors, dedicated graphics, and high- quality displays.Do you have a preference for screen size ?' },
-        { role: 'user', content: 'I prefer a larger screen, around 15 inches.', },
-        { role: 'assistant', content: 'In that case, the Dell XPS 15 with its 15.6 - inch InfinityEdge display or the HP Spectre x360 with a 15.6 - inch 4K OLED display would be great options.They provide sharp visuals and vibrant colors.Are there any other features or specifications you\'re concerned about?' },
-        { role: 'user', content: 'Battery life is important to me since I\'ll be working on the go.What can you tell me about the battery life of these laptops? ' },
-        { role: 'assistant', content: 'Both the Dell XPS 15 and HP Spectre x360 offer decent battery life.The XPS 15 typically lasts around 8 - 10 hours, while the Spectre x360 can provide around 7 - 9 hours of usage.Keep in mind that actual battery life may vary based on usage.' },
-        { role: 'user', content: 'That sounds good. I\'ll look into these options.Thanks for your help!' },
-        { role: 'assistant', content: 'You\'re welcome! If you have any more questions or need further assistance while making your decision, feel free to ask.Happy laptop hunting!' },
+        // { role: 'user', content: 'Hi there! I need some advice on choosing a new laptop. Can you help me out?' },
+        // { role: 'assistant', content: 'Of course! I\'d be happy to help you find the right laptop.What are your specific requirements and budget?' },
+        // { role: 'user', content: 'I\'m a graphic designer, so I need something with a powerful processor and a good graphics card.My budget is around $1500.', },
+        // { role: 'assistant', content: 'Great! For graphic design, you\'ll want a laptop with a dedicated graphics card and a high- resolution display.Are there any specific brands or preferences you have in mind ?' },
+        // { role: 'user', content: 'I\'ve heard good things about both Dell and HP, but I\'m open to suggestions.What do you recommend?' },
+        // { role: 'assistant', content: 'Both Dell and HP offer excellent laptops for graphic design.I recommend checking out the Dell XPS 15 or the HP Spectre x360.They have powerful processors, dedicated graphics, and high- quality displays.Do you have a preference for screen size ?' },
+        // { role: 'user', content: 'I prefer a larger screen, around 15 inches.', },
+        // { role: 'assistant', content: 'In that case, the Dell XPS 15 with its 15.6 - inch InfinityEdge display or the HP Spectre x360 with a 15.6 - inch 4K OLED display would be great options.They provide sharp visuals and vibrant colors.Are there any other features or specifications you\'re concerned about?' },
+        // { role: 'user', content: 'Battery life is important to me since I\'ll be working on the go.What can you tell me about the battery life of these laptops? ' },
+        // { role: 'assistant', content: 'Both the Dell XPS 15 and HP Spectre x360 offer decent battery life.The XPS 15 typically lasts around 8 - 10 hours, while the Spectre x360 can provide around 7 - 9 hours of usage.Keep in mind that actual battery life may vary based on usage.' },
+        // { role: 'user', content: 'That sounds good. I\'ll look into these options.Thanks for your help!' },
+        // { role: 'assistant', content: 'You\'re welcome! If you have any more questions or need further assistance while making your decision, feel free to ask.Happy laptop hunting!' },
     ]
 
 
@@ -166,7 +191,7 @@ function ChatScreen() {
             backgroundColor: colors.white,
             flex: 1
         }}>
-            {/* {data.length == 0 && <View style={{
+            {data.length == 0 && <View style={{
                 paddingHorizontal: 15, backgroundColor: '#ffffff', flex: 1
             }}>
                 <View style={{ alignItems: 'center', justifyContent: 'center', height: height / 1.2, paddingHorizontal: 30 }}>
@@ -177,18 +202,19 @@ function ChatScreen() {
                     {uri && <View style={{ flexDirection: 'row', marginTop: 10 }}>
                         <TouchableOpacity onPress={() => { onStartPlay(); }}><PlayCircle color='#000' size={35} /></TouchableOpacity>
                         <TouchableOpacity onPress={() => { onStopPlay(); }}><StopCircle color='#000' size={35} /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { submitfile(); }}><Send color='#000' size={35} /></TouchableOpacity>
                     </View>}
                 </View>
-            </View>} */}
+            </View>}
 
-            <View style={{
+            {data.length > 0 && <View style={{
                 flex: 1
             }}>
                 <FlatList
                     contentContainerStyle={{
                         paddingHorizontal: 15,
                         paddingVertical: 15,
-                        flexGrow: 1, 
+                        flexGrow: 1,
                     }}
                     style={{}}
                     scrollEnabled={true}
@@ -202,8 +228,11 @@ function ChatScreen() {
                         </View>
                     </View>}
                 />
-            </View>
-            <View style={{ alignItems: 'center', backgroundColor: colors.white, paddingVertical: 10 }}>
+            </View>}
+            <View style={{ alignItems: 'center', backgroundColor: colors.white, paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-around' }}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => { }} style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                    <Home color={colors.black} size={26} />
+                </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => { _onStartStopRecording(); }}
@@ -215,9 +244,12 @@ function ChatScreen() {
                     //     if (isRecording)
                     //         _onStopRecording();
                     // }}
-                    style={{ backgroundColor: colors.primary, width: 60, height: 60, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}
+                    style={{ backgroundColor: colors.primary, width: 80, height: 80, alignItems: 'center', justifyContent: 'center', borderRadius: 40 }}
                 >
-                    {isRecording ? <MicrophoneSlash color={colors.white} size={26} /> : <Microphone color={colors.white} size={26} />}
+                    {isRecording ? <MicrophoneSlash color={colors.white} size={33} /> : <Microphone color={colors.white} size={33} />}
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => { }} style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center', borderRadius: 20 }}>
+                    <Setting color={colors.black} size={26} />
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
