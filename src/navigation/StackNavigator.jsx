@@ -7,6 +7,7 @@ import globalstyle from '../theme/style';
 import { Text } from 'react-native';
 import { colors, fonts } from '../theme';
 import SoundWaveSlider from '../screens/SoundWaveSlider';
+import ParallaxScroll from '../screens/ParallaxScroll';
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -38,6 +39,15 @@ const StackNavigator = () => {
             name="SoundWaveSlider"
             component={SoundWaveSlider}
             options={{
+                headerShown: false
+            }}
+        />
+        <Stack.Screen
+            name="ParallaxScroll"
+            component={ParallaxScroll}
+            options={{
+                // title: '',
+                // headerTransparent: true
                 headerShown: false
             }}
         />
